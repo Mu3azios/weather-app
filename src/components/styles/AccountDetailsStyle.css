@@ -1,0 +1,256 @@
+.account-details {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 40px;
+  font-family: 'SF Pro', 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.header i {
+  cursor: pointer;
+  padding-right: 10px;
+  font-weight: bold;
+}
+
+.profile-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.curved-background {
+  position: absolute;
+  width: 100%;
+  height: 25%;
+  top: 0;
+  left: 0;
+  background-color: rgb(234, 240, 255);
+  clip-path: polygon(0 0, 100% 0, 100% 90%, 50% 100%, 50% 100%, 0 90%);
+  z-index: -1;
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+}
+
+.edit-icon-container {
+  position: absolute;
+  bottom: 10px;
+  right: 25%;
+  background: rgb(234, 240, 255);
+  border: none;
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.photo-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  position: absolute;
+  bottom: -70px;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+}
+.profile-edit-button{
+  padding:10px !important;
+  width:150px
+}
+.user-data-preview {
+  display: block;
+  margin-top: 5px;
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 20px;
+  line-height: 10px;
+height: 6rem;
+  padding: 2px;
+}
+
+.separator{
+  position: absolute;
+  right: 50%;
+  left: 50%;
+}
+.email-with-phone{
+  display: flex;
+ flex-direction: row;
+}
+.email{
+text-align: right;
+  width: 50%;
+word-break:break-all;
+margin-right: 10px;
+
+}
+
+.phone{
+  text-align: left;
+  word-break: break-all;
+  word-spacing: 0px;
+  
+  margin-left: 10px;
+  width: 50%;
+}
+
+.photo-options button {
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.file-input {
+  display: none;
+}
+
+.input-field-container {
+  position: relative;
+  margin: 15px auto auto auto;
+}
+
+input {
+  border: 1px solid lightgray;
+  outline: none;
+  width: 100%;
+  height: 55px;
+  font-size: 15px;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-top: 5px;
+}
+
+.container-for-phone-input-only{
+  width: 100.6%;
+  padding-right: 1%;
+  border: black 1px solid;
+  padding-bottom: 2px;
+  border-radius: 10px;
+
+}
+
+.vue-phone-input{
+  border: none;
+  outline: none;
+ width: 100%;
+  height: 60px;
+  font-size: 15px;
+  border-radius: 10px;
+
+  margin:0;
+ ;
+
+}
+
+label {
+  position: absolute;
+  top: 40%;
+  left: 10px;
+  color: darkgray;
+  transform: translateY(-40%);
+  transition: 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+/* Move label when input is focused or has a valid value */
+input:focus + label,
+input:valid + label,
+.vue-phone-input+ label,
+.vue-phone-input+ label {
+  color: rgb(93, 93, 93);
+  font-size: 10px;
+  top: 2%;
+  transform: translateY(0);
+  margin: 5px auto;
+  background: white;
+}
+
+input:disabled + label,
+.vue-phone-input + label {
+  font-size: 10px;
+  top: 2%;
+  transform: translateY(0);
+  margin: 5px auto;
+}
+
+input:disabled,
+.vue-phone-input:disabled,
+.container-for-phone-input-only {
+  background: whitesmoke !important;
+  border: none;
+  color: black;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+
+
+.submit-button-container {
+  width: 90%;
+  max-width: 400px;
+  margin: 20px auto; /* Reduced top margin */
+  position: absolute;
+  bottom: 20px; /* Fixed distance from bottom */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 20px;
+  background-color: rgb(46, 59, 89);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  position: sticky;
+  bottom: 20px; /* Ensures visibility during scrolling */
+}
+@media (min-width: 1025px) {
+  .edit-icon-container {
+    right: 45%;
+}
+.photo-options{
+  right: 45%;
+}
+}
+
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .edit-icon-container {
+    right: 40%;
+}
+
+}
+
+
+@media (max-width: 767px) {
+  .edit-icon-container {
+    right: 30%;
+}
+}
