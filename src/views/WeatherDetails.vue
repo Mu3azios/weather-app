@@ -45,7 +45,7 @@ export default defineComponent({
 
     const refreshData = () => {
       currentTime.value = new Date();
-      getWeatherDetails(); 
+      getWeatherDetails();
     };
     const goBack = () => {
       router.push({ name: "home" });
@@ -91,16 +91,7 @@ export default defineComponent({
         state: selectedCity.state,
         lat: selectedCity.lat,
         lon: selectedCity.lon,
-        temp: null,
-        temp_max: null,
-        temp_min: null,
-        weatherDescription: "",
-        sunset:null,
-        sunrise:null,
-        timezone:null,
-        timezone_offset:null,
-        dt:null
-
+   
       };
 
       if (!exists.value) {
@@ -125,7 +116,7 @@ export default defineComponent({
      }
      getWeatherDetails().then(() => {
        if (detailedWeatherData.value) {
-         getDayTime(); 
+         getDayTime();
        }
      });
    });
@@ -141,7 +132,7 @@ export default defineComponent({
       detailedWeatherData,
       selectedCity,
       getDayTime,
-     
+
       refreshData,
       errorMessage,
       todayDate,
@@ -178,7 +169,7 @@ export default defineComponent({
       <div class="current-day">
         <p :style="{ fontWeight: '300' }">{{ todayDate }}</p>
       </div>
-      
+
         <span v-if="errorMessage" class="error-message"><i class="pi pi-exclamation-circle"></i> {{ errorMessage }}</span>
 
         <div v-if="detailedWeatherData">
@@ -200,7 +191,7 @@ export default defineComponent({
             </div>
           </div>
         </div>
-   
+
     </div>
 
     <div v-if="detailedWeatherData">

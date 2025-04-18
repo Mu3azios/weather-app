@@ -61,18 +61,18 @@ export const useWeatherStore = defineStore("weather", () => {
     }
   };
 
-  // ✅ Set the geolocation
+
  const isMyCity = ( lat: number, lon: number): boolean => {
   const latDiff = Math.abs(lat - geoLocation.value.latitude);
   const lonDiff = Math.abs(lon - geoLocation.value.longitude);
-  return latDiff <= 0.045 && lonDiff <= 0.0045; // ~500m tolerance
+  return latDiff <= 0.01 && lonDiff <=0.01; // ~1.1 km tolerance
 };
   // ✅ Get country name from ISO code
   const getCountryName = (countryCode: string): string => {
     return countries.getName(countryCode, "en", { select: "official" }) || countryCode;
   };
 
-  // ✅ Format time for display
+  //  Format time for display
   const formatTime = (timestamp: number): string => {
     return new Date(timestamp * 1000).toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -81,7 +81,7 @@ export const useWeatherStore = defineStore("weather", () => {
     });
   };
 
-  // ✅ Helper: Calculate "Day" or "Night" based on sunrise/sunset
+  //  Helper: Calculate "Day" or "Night" based on sunrise/sunset
   const getDayOrNight = (sunrise: number, sunset: number): string => {
     const currentUtcTime = Math.floor((new Date()).getTime() / 1000);
     const dayOrNight = currentUtcTime >= sunrise && currentUtcTime <= sunset ? "Day" : "Night";
@@ -89,12 +89,9 @@ export const useWeatherStore = defineStore("weather", () => {
     return dayOrNight;
   };
 
-  // ✅ Helper: Determine background image based on description + time
+ // Helper: Determine background image based on description + time
   const getBackgroundImage = (description: string, time: string): string => {
-    // if (!description) {
-    //   console.warn("Missing description for getBackgroundImage", { description, time });
-    //   return `clear${time}.jpg`; // Default background in case description is missing
-    // }
+
     const desc = description.toLowerCase();
     const timeOfDay = time || "Day";
 
@@ -105,27 +102,15 @@ export const useWeatherStore = defineStore("weather", () => {
     return `clear${timeOfDay}.jpg`;
   };
 
-  // ✅ Enrich cities with dayOrNight + backgroundImage
-  const updateCityData = (city: SavedCities): SavedCities => {
-    const dayOrNight = city.sunrise && city.sunset 
-      ? getDayOrNight(city.sunrise, city.sunset, city.timezoneOffset)
-      : 'Day';
-      
-    return {
-      ...city,
-      dayOrNight,
-      backgroundImage: getBackgroundImage(city.description || '', dayOrNight),
-    };
-  };
 
-  // ✅ Load cities from localStorage and update  them
   const loadCities = () => {
     const saved = localStorage.getItem("savedCities");
     if (saved) {
       const parsed: SavedCities[] = JSON.parse(saved);
-      savedCities.value = parsed.map(updateCityData);
+      savedCities.value = parsed;
     }
   };
+
 
 
 
@@ -137,10 +122,10 @@ export const useWeatherStore = defineStore("weather", () => {
     getCurrentLocation,
     isMyCity,
     getDayOrNight,
+    getBackgroundImage,
     getCountryName,
     savedCities,
     loadCities,
-    updateCityData,
     formatTime,
   };
 });

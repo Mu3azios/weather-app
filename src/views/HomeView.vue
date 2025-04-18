@@ -8,8 +8,6 @@ import "../components/styles/HomeViewStyle.css";
 import "../components/styles/Loader.css";
 import { useApi } from "../composable/useApi";
 
-
-
 interface CitySearchResults {
   city: {
     name: string;
@@ -20,12 +18,10 @@ interface CitySearchResults {
 export default defineComponent({
   name: "HomeView",
   setup() {
-    const apiKey =import.meta.env.VITE_OPENWEATHER_API_KEY;
+    const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
     const weatherStore = useWeatherStore();
     const router = useRouter();
     const weatherCardRef = ref<HTMLElement | null>(null);
-
-      
 
     const selectedCity = ref<any>({});
 
@@ -74,22 +70,6 @@ export default defineComponent({
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
 
-    const onSearchFocus = async () => {
-  isSearchFocused.value = true;
-
-  if (!cityName.value.trim()) {
-    const myLocation = await showMyLocation();
-    if (myLocation) {
-
-      myCurrentLocation.value = { ...myLocation, isMyLocation: true };
-      
-    
-      citySearchResults.value = citySearchResults.value.filter(c => 
-        !weatherStore.isMyCity(c.lat, c.lon)
-      );
-    }
-  }
-};
     //-------------------------------------------------------------------------------------------------------------------------------------------
     const debouncedSearchCities = debounce(async () => {
       if (!cityName.value.trim()) {
@@ -155,11 +135,11 @@ export default defineComponent({
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
     const clearSearch = () => {
-  cityName.value = ""; 
-  citySearchResults.value = [];
-  isSearchFocused.value = false;
-  debouncedSearchCities.cancel(); // Cancel any pending searches
-};
+      cityName.value = "";
+      citySearchResults.value = [];
+      isSearchFocused.value = false;
+      debouncedSearchCities.cancel(); // Cancel any pending searches
+    };
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -168,8 +148,8 @@ export default defineComponent({
         lat,
         lon,
         appid: apiKey,
-        units: "metric", 
-        lang: "en", 
+        units: "metric",
+        lang: "en",
       });
 
       if (error) {
@@ -209,64 +189,63 @@ export default defineComponent({
     }
     //------------------------------------------------------------------------------------------
     const displayCities = async () => {
-  if (Array.isArray(weatherStore.savedCities)) {
-    const updatedCities = await Promise.all(
-      weatherStore.savedCities.map(async (city) => {
-        try {
-          const weatherData = await getCurrentWeather(city.lat, city.lon);
-          if (!weatherData) return city;
-          
-          return {
-            ...city,
-            isMyLocation: weatherStore.isMyCity(city.lat, city.lon),
-            temp: weatherData.main?.temp,
-            temp_max: weatherData.main?.temp_max,
-            temp_min: weatherData.main?.temp_min,
-            description: weatherData.weather?.[0]?.description || '',
-            timezoneOffset: weatherData.timezone,
-            sunrise: weatherData.sys?.sunrise,
-            sunset: weatherData.sys?.sunset
-          };
-        } catch (error) {
-          console.error("Error updating city:", city.name, error);
-          return city;
-        }
-      })
-    );
-    
-    // Update all cities in the store at once
-    weatherStore.savedCities = updatedCities.map(city => weatherStore.updateCityData(city));
-  }
-};
+      if (Array.isArray(weatherStore.savedCities)) {
+        const updatedCities = await Promise.all(
+          weatherStore.savedCities.map(async (city) => {
+            try {
+              const weatherData = await getCurrentWeather(city.lat, city.lon);
+              if (!weatherData) return city;
+
+              const isMyLocation = weatherStore.isMyCity(city.lat, city.lon);
+              const dayOrNight = weatherStore.getDayOrNight(weatherData.sys?.sunrise,weatherData.sys?.sunset)
+              const backgroundImage = weatherStore.getBackgroundImage(weatherData.weather?.[0]?.description,dayOrNight )
+
+              return {
+                ...city,
+                isMyLocation,
+                dayOrNight,
+                backgroundImage,
+                temp: weatherData.main?.temp,
+                temp_max: weatherData.main?.temp_max,
+                temp_min: weatherData.main?.temp_min,
+                description: weatherData.weather?.[0]?.description || "",
+                timezoneOffset: weatherData.timezone,
+
+              };
+            } catch (error) {
+              console.error("Error updating city:", city.name, error);
+              return city;
+            }
+          })
+        );
+
+        weatherStore.savedCities = updatedCities;
+      }
+    };
 
     //-------------------------------------------------------------------------------------------------------------------------------------------
 
-
     const sortedCities = computed(() => {
-  const cities = [...weatherStore.savedCities]; // clone to avoid mutating store
-  const myCityIndex = cities.findIndex((city) => weatherStore.isMyCity(city.lat, city.lon));
+      const cities = [...weatherStore.savedCities]; // clone to avoid mutating store
+      const myCityIndex = cities.findIndex((city) => weatherStore.isMyCity(city.lat, city.lon));
 
-  const myCity = myCityIndex !== -1 ? cities.splice(myCityIndex, 1)[0] : null;
+      const myCity = myCityIndex !== -1 ? cities.splice(myCityIndex, 1)[0] : null;
 
-  // Reverse the remaining cities (newest added last = show first)
-  const reversedCities = cities.reverse();
+      // Reverse the remaining cities (newest added last = show first)
+      const reversedCities = cities.reverse();
 
-  return myCity ? [myCity, ...reversedCities] : reversedCities;
-});
-
-
-
-
-
+      return myCity ? [myCity, ...reversedCities] : reversedCities;
+    });
 
     onMounted(async () => {
-      weatherStore.getCurrentLocation();
+      // wait for geolocation to be set
+      await weatherStore.getCurrentLocation();
       weatherStore.loadCities();
       await displayCities();
     });
 
     onUnmounted(() => {
-      debouncedSearchCities.cancel(); 
+      debouncedSearchCities.cancel();
     });
 
     return {
@@ -275,7 +254,7 @@ export default defineComponent({
       weatherCardRef,
       showMyLocation,
       isSearchFocused,
-      onSearchFocus,
+
       citySearchResults,
       cityName,
       clearSearch,
@@ -297,7 +276,6 @@ export default defineComponent({
 
 <template>
   <div class="home-container">
-
     <div
       class="search-container"
       :class="{ 'has-input': cityName.length > 0, 'is-focused': isSearchFocused }"
@@ -317,46 +295,36 @@ export default defineComponent({
           v-model="cityName"
           @input="debouncedSearchCities"
           @keydown="handleKeyNavigation"
-          @focus="onSearchFocus"
-    
-          @click="showMyLocation"
+          @focus="() => showMyLocation()"
           placeholder="Search for a city or airport"
         />
-        <i  v-if="isSearchFocused" class="pi pi-times-circle closing-icon" @click="clearSearch"></i>
+        <i v-if="isSearchFocused" class="pi pi-times-circle closing-icon" @click="clearSearch"></i>
       </div>
 
-
-   
-
-
       <div v-if="citySearchResults.length" class="dropdown-menu">
-  <ul>
-  <li
-    v-for="(city, index) in [myCurrentLocation, ...citySearchResults].filter(Boolean)"
-    :key="index"
-    @click="viewDetails(city)"
-    class="dropdown-item clickable-span"
-    :class="{
-      highlighted:
-        highlightedIndex ===
-        (myCurrentLocation ? index : index + 1 - 1), 
-    }"
-  >
-    <template v-if="myCurrentLocation && city === myCurrentLocation">
-      My Location: {{ city.name }},
-      {{ weatherStore.getCountryName(city.country) }}
-      <i class="pi pi-map-marker"></i>
-    </template>
-    <template v-else>
-      {{ city.name }}
-      <span v-if="city.state">, {{ city.state }}</span>,
-      {{ weatherStore.getCountryName(city.country) }}
-    </template>
-  </li>
-</ul>
-
-
-
+        <ul>
+          <li
+            v-for="(city, index) in [myCurrentLocation, ...citySearchResults].filter(Boolean)"
+            :key="index"
+            @click="viewDetails(city)"
+            class="dropdown-item clickable-span"
+            :class="{
+              highlighted: highlightedIndex === (myCurrentLocation ? index : index + 1 - 1),
+            }"
+          >
+            <template v-if="myCurrentLocation && city === myCurrentLocation">
+              My Location: {{ city.name }},
+              {{ weatherStore.getCountryName(city.country) }}
+              <i class="pi pi-map-marker"></i>
+            </template>
+            <template v-else>
+              {{ city.name }}
+              <span v-if="city.state">, {{ city.state }}</span
+              >,
+              {{ weatherStore.getCountryName(city.country) }}
+            </template>
+          </li>
+        </ul>
       </div>
     </div>
     <p v-if="weatherStore.isLoading">Fetching location...</p>
@@ -381,15 +349,13 @@ export default defineComponent({
         >
           <!-- Top-left (Location) -->
           <div class="weather-item location">
-            <p class="myLocationLabel" v-if="weatherStore.isMyCity(city.lat, city.lon)">My Location</p>
+            <p class="myLocationLabel" v-if="city.isMyLocation">My Location</p>
             <p class="city-name">{{ city.name }}</p>
-            <p class="city-timezone" v-if="!weatherStore.isMyCity(city.lat, city.lon)">
+            <p class="city-timezone" v-if="!city.isMyLocation">
               {{ getLocalTime(city.timezoneOffset) }}
             </p>
           </div>
 
-
-          
           <!-- Top-right (Temperature) -->
           <div class="weather-item temperature">
             <p class="temperatureText">{{ city.temp ? Math.ceil(city.temp) + "°" : "—" }}</p>
