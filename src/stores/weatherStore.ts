@@ -62,12 +62,13 @@ export const useWeatherStore = defineStore("weather", () => {
   };
 
 
- const isMyCity = ( lat: number, lon: number): boolean => {
-  const latDiff = Math.abs(lat - geoLocation.value.latitude);
-  const lonDiff = Math.abs(lon - geoLocation.value.longitude);
-  return latDiff <= 0.01 && lonDiff <=0.01; // ~1.1 km tolerance
-};
-  // ✅ Get country name from ISO code
+  const isMyCity = (lat: number, lon: number): boolean => {
+
+    const latDiff = Math.abs(lat - geoLocation.value.latitude);
+    const lonDiff = Math.abs(lon - geoLocation.value.longitude);
+    return latDiff <= 0.01 && lonDiff <= 0.01;   // around 1.1 km tolerance
+  };
+  // Get country name from ISO code
   const getCountryName = (countryCode: string): string => {
     return countries.getName(countryCode, "en", { select: "official" }) || countryCode;
   };

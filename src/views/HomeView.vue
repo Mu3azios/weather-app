@@ -189,6 +189,7 @@ export default defineComponent({
     }
     //------------------------------------------------------------------------------------------
     const displayCities = async () => {
+
       if (Array.isArray(weatherStore.savedCities)) {
         const updatedCities = await Promise.all(
           weatherStore.savedCities.map(async (city) => {
@@ -196,7 +197,7 @@ export default defineComponent({
               const weatherData = await getCurrentWeather(city.lat, city.lon);
               if (!weatherData) return city;
 
-              const isMyLocation = weatherStore.isMyCity(city.lat, city.lon);
+              const isMyLocation = weatherStore.isMyCity(weatherData.coord.lat, weatherData.coord.lon);
               const dayOrNight = weatherStore.getDayOrNight(weatherData.sys?.sunrise,weatherData.sys?.sunset)
               const backgroundImage = weatherStore.getBackgroundImage(weatherData.weather?.[0]?.description,dayOrNight )
 
@@ -238,9 +239,10 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      // wait for geolocation to be set
       await weatherStore.getCurrentLocation();
       weatherStore.loadCities();
+      // wait for geolocation to be set
+
       await displayCities();
     });
 
