@@ -91,7 +91,7 @@ export default defineComponent({
         state: selectedCity.state,
         lat: selectedCity.lat,
         lon: selectedCity.lon,
-   
+
       };
 
       if (!exists.value) {
@@ -149,13 +149,13 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="main">
+  <main class="main">
     <div v-if="weatherStore.isLoading" class="loader-overlay">
       <div class="loader"></div>
     </div>
     <!-- Current Day Section (wrapped with .background) -->
     <div :class="getDayTime() === 'Day' ? 'day-background' : 'night-background'" class="background">
-      <div class="header">
+      <header class="header">
         <i class="pi pi-angle-left" @click="goBack"></i>
 
         <p class="city-name">
@@ -164,17 +164,17 @@ export default defineComponent({
 
         <span v-if="exists" class="pi pi-trash" @click="removeCity"></span>
         <span v-if="!exists" class="pi pi-plus" @click="addCity"></span>
-      </div>
+      </header>
 
-      <div class="current-day">
+      <section class="current-day">
         <p :style="{ fontWeight: '300' }">{{ todayDate }}</p>
-      </div>
+      </section>
 
         <span v-if="errorMessage" class="error-message"><i class="pi pi-exclamation-circle"></i> {{ errorMessage }}</span>
 
-        <div v-if="detailedWeatherData">
-          <div class="">
-            <div class="weather-overview">
+        <section  v-if="detailedWeatherData">
+
+            <article class="weather-overview">
               <img
                 :src="`http://openweathermap.org/img/wn/${detailedWeatherData.current.weather[0].icon}@4x.png`"
                 :alt="detailedWeatherData.current.weather[0].description"
@@ -188,16 +188,16 @@ export default defineComponent({
 
                 <i class="pi pi-refresh" @click="refreshData"></i>
               </p>
-            </div>
-          </div>
-        </div>
+            </article>
+
+        </section>
 
     </div>
 
-    <div v-if="detailedWeatherData">
+    <section v-if="detailedWeatherData">
       <p class="forecast-title">Hourly Forecast</p>
       <div class="hourly-forecast">
-        <div
+        <article
           v-for="(hour, index) in detailedWeatherData.hourly.slice(0, 12)"
           :key="index"
           class="hourly-forecast-card"
@@ -215,16 +215,17 @@ export default defineComponent({
               })
             }}
           </p>
-        </div>
+        </article>
       </div>
 
       <p class="forecast-title">Weekly Forecast</p>
-      <div class="weekly-forecast">
+      <article class="weekly-forecast">
         <div
           v-for="(day, index) in detailedWeatherData.daily.slice(0, 7)"
           :key="index"
           class="weekly-forecast-card"
         >
+
           <div class="icon-cell">
             <img
               class="weekly-icon"
@@ -240,11 +241,11 @@ export default defineComponent({
           </div>
           <div class="temperature-cell">
             <p :style="{ fontWeight: 500 }">{{ Math.ceil((day.temp.min + day.temp.max) / 2) }}°C</p>
-            <img class="arrow" :src="play" />
+            <img class="arrow" :src="play" alt="arrow"/>
           </div>
         </div>
-      </div>
-      <div></div>
-    </div>
-  </div>
+      </article>
+     
+    </section>
+  </main>
 </template>

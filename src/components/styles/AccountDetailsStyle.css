@@ -4,7 +4,7 @@
   margin: 0 auto;
 }
 
-.header {
+.profile-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,7 +14,7 @@
   font-weight: bold;
 }
 
-.header i {
+.profile-header i {
   cursor: pointer;
   padding-right: 10px;
   font-weight: bold;
@@ -107,7 +107,7 @@ margin-right: 10px;
   text-align: left;
   word-break: break-all;
   word-spacing: 0px;
-  
+
   margin-left: 10px;
   width: 50%;
 }
@@ -140,26 +140,12 @@ input {
   padding-top: 5px;
 }
 
-.container-for-phone-input-only{
-  width: 100.6%;
-  padding-right: 1%;
-  border: black 1px solid;
-  padding-bottom: 2px;
-  border-radius: 10px;
-
-}
-
-.vue-phone-input{
-  border: none;
-  outline: none;
+vue-phone-input{
  width: 100%;
   height: 60px;
   font-size: 15px;
   border-radius: 10px;
-
   margin:0;
- ;
-
 }
 
 label {
@@ -175,8 +161,8 @@ label {
 /* Move label when input is focused or has a valid value */
 input:focus + label,
 input:valid + label,
-.vue-phone-input+ label,
-.vue-phone-input+ label {
+vue-phone-input+ label,
+vue-phone-input+ label {
   color: rgb(93, 93, 93);
   font-size: 10px;
   top: 2%;
@@ -186,21 +172,63 @@ input:valid + label,
 }
 
 input:disabled + label,
-.vue-phone-input + label {
+vue-phone-input + label {
   font-size: 10px;
   top: 2%;
   transform: translateY(0);
   margin: 5px auto;
 }
+.input-field-container label[for="phone"] {
+  position: absolute;
+  top: 2%;
+  left: 10px;
+  font-size: 10px;
+  /* color: rgb(93, 93, 93); */
+  transform: translateY(0);
+  margin: 3px auto;
 
+  pointer-events: none;
+  z-index: 1;
+}
+.vti__search_box{
+  margin-top: 3px !important;
+  width: 98% !important;
+  border-radius: 5px !important;
+  margin: 10px 0 10px 5px !important;
+  height: 40px !important;
+}
+.vti__dropdown-item {
+  padding: 10px !important;
+
+}
+.vti__dropdown-list{
+margin-top: 25px !important;
+}
 input:disabled,
-.vue-phone-input:disabled,
-.container-for-phone-input-only {
+vue-phone-input:disabled{
   background: whitesmoke !important;
-  border: none;
+  border: none !important;
+  outline: none !important;
   color: black;
 }
+.vue-tel-input:disabled{
+  border: none !important;
+  background-color: red !important;
+}
 
+.vti__dropdown{
+
+  background-color: rgb(244, 244, 244);
+}
+.vue-tel-input{
+border: 1px solid rgb(235, 235, 235) !important;
+border-radius: 5px !important;
+}
+
+.vti__input:disabled {
+  border: none !important;
+
+}
 .error {
   color: red;
   font-size: 12px;

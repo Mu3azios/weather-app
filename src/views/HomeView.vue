@@ -277,19 +277,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="home-container">
-    <div
+  <main  class="home-container">
+    <section
       class="search-container"
       :class="{ 'has-input': cityName.length > 0, 'is-focused': isSearchFocused }"
     >
-      <div class="home-page-header">
+      <header  class="home-page-header">
         <h1 class="title">Weather</h1>
         <RouterLink :to="{ name: 'AccountDetails' }">
           <p class="pi pi-user" @click="viewAccount"></p>
         </RouterLink>
-      </div>
+      </header>
 
-      <div class="search-wrapper">
+      <form  class="search-wrapper">
         <i class="pi pi-search search-icon"></i>
         <input
           class="search"
@@ -301,7 +301,7 @@ export default defineComponent({
           placeholder="Search for a city or airport"
         />
         <i v-if="isSearchFocused" class="pi pi-times-circle closing-icon" @click="clearSearch"></i>
-      </div>
+      </form>
 
       <div v-if="citySearchResults.length" class="dropdown-menu">
         <ul>
@@ -328,7 +328,7 @@ export default defineComponent({
           </li>
         </ul>
       </div>
-    </div>
+    </section>
     <p v-if="weatherStore.isLoading">Fetching location...</p>
     <p v-if="weatherStore.errorMessage" class="error-message">{{ weatherStore.errorMessage }}</p>
 
@@ -337,14 +337,14 @@ export default defineComponent({
       <div class="loader"></div>
     </div>
     <!-- Current weather card -->
-    <div v-if="weatherStore.savedCities">
+    <section v-if="weatherStore.savedCities">
       <div
         v-for="(city, index) in sortedCities"
         :key="index"
         class="router-link"
         @click="viewDetails(city)"
       >
-        <div
+        <article 
           ref="weatherCardRef"
           class="weather-card"
           :style="{ backgroundImage: 'url(../src/assets/photos/' + city.backgroundImage + ')' }"
@@ -375,8 +375,8 @@ export default defineComponent({
               {{ city.temp_min ? Math.ceil(city.temp_min) + "°" : "—" }}
             </p>
           </div>
-        </div>
+        </article>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 </template>

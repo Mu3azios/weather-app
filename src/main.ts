@@ -32,7 +32,7 @@ app.use(VueTelInput, {
   dropdownOptions: {
     showDialCodeInList: true,
     showSearchBox: true,
-    searchBoxPlaceholder: "Search Your Country Code",
+    searchBoxPlaceholder: "Search Your Country",
   },
 });
 

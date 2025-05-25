@@ -47,15 +47,15 @@ export default defineComponent({
       fileInput.value?.click();
     };
     const removeProfilePicture = () => {
-      userData.value.photo = null; 
+      userData.value.photo = null;
       tempUserData.value.photo = null;
-  
-      showPhotoOptions.value = false; 
+
+      showPhotoOptions.value = false;
       toast.success("Photo Has Been Removed");
     };
 
     const formatPhoneNumber = () => {
-  
+
       const raw = tempUserData.value.phone;
 
       // Extract country code (starting with +)
@@ -72,9 +72,9 @@ export default defineComponent({
         }
 
         tempUserData.value.phone = `${countryCode} ${formatted}`;
-        errors.value.phone = ""; 
+        errors.value.phone = "";
       } else {
-     
+
         const digitsOnly = raw.replace(/\D/g, "");
         let formatted = "";
         for (let i = 0; i < digitsOnly.length; i += 3) {
@@ -83,27 +83,27 @@ export default defineComponent({
         }
 
         tempUserData.value.phone = formatted;
-        errors.value.phone = ""; 
+        errors.value.phone = "";
       }
     };
 
     const validateName = () => {
       const name = tempUserData.value.name;
-      errors.value.name = ""; 
+      errors.value.name = "";
 
       if (!name) {
         errors.value.name = "Name is required.";
-        return; 
+        return;
       }
 
       if (name.length > 20) {
         errors.value.name = "Name must be 20 characters or less.";
-        return; 
+        return;
       }
 
       if (/\d/.test(name)) {
         errors.value.name = "Name cannot contain numbers.";
-        return; 
+        return;
       }
     };
 
@@ -115,7 +115,7 @@ export default defineComponent({
         return;
       }
 
-    
+
       if (email.indexOf("@") === -1) {
         errors.value.email = "Invalid email format (missing @ symbol)";
         return;
@@ -171,7 +171,7 @@ export default defineComponent({
         reader.onload = (e) => {
           userData.value.photo = e.target?.result;
           tempUserData.value.photo = e.target?.result;
-     
+
           showPhotoOptions.value = false; // Close the photo options
           toast.success("Photo Updated Successfully");
         };
@@ -214,20 +214,20 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="account-details">
-    <div class="header">
+  <section  class="account-details">
+    <header class="profile-header">
       <i class="pi pi-arrow-left" @click="goToHomeView"></i>
       <h2>Edit Profile</h2>
       <div></div>
-    </div>
+    </header>
     <div class="curved-background"></div>
-    <div class="profile-image-container">
+    <figure  class="profile-image-container">
       <img
         :src="tempUserData.photo ? tempUserData.photo : defaultPhoto"
         alt="User Photo"
         class="profile-image"
       />
-      <div v-if="editMode" class="edit-icon-container" @click="togglePhotoOptions">
+      <div  v-if="editMode" class="edit-icon-container" @click="togglePhotoOptions">
         <i class="pi pi-pencil"></i>
       </div>
       <div v-if="showPhotoOptions" class="photo-options">
@@ -241,16 +241,16 @@ export default defineComponent({
         </button>
         <input type="file" ref="fileInput" @change="handleFileUpload" class="file-input" />
       </div>
-    </div>
+    </figure>
 
-    <div class="user-data-preview">
+    <section  class="user-data-preview">
       <p>{{ userData.name }}</p>
-      <div class="email-with-phone">
+      <div  class="email-with-phone">
         <div class="email">{{ userData.email }}</div>
         <div class="separator">|</div>
         <div class="phone">{{ userData.phone.replace(/-/g, "") }}</div>
       </div>
-    </div>
+    </section>
 
     <div :style="{ padding: '0 10px' }">
       <div class="input-field-container">
@@ -278,9 +278,7 @@ export default defineComponent({
       </div>
 
       <div class="input-field-container">
-        <div class="container-for-phone-input-only">
           <vue-tel-input
-            class="vue-phone-input"
             id="phone"
             name="phone"
             v-model="tempUserData.phone"
@@ -289,15 +287,15 @@ export default defineComponent({
             required
           />
           <label for="phone">phone</label>
-        </div>
+
         <span v-if="errors.phone" class="error">{{ errors.phone }}</span>
       </div>
     </div>
 
-    <div class="submit-button-container">
-      <button @click="toggleEditMode" class="submit-button">
+    <footer class="submit-button-container">
+      <button type="submit" @click="toggleEditMode" class="submit-button">
         {{ editMode ? "Submit" : "Edit" }}
       </button>
-    </div>
-  </div>
+    </footer>
+  </section>
 </template>

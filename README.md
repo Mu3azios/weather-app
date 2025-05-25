@@ -16,17 +16,12 @@ npm install
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### Add your API key: ## important
 
-```sh
-npm run build
-```
-### Add your API key:
+-- Create a file in the root directory and name it ".env" and add this line:
+VITE_OPENWEATHER_API_KEY=your_api_key_here
 
--- Create a .env file and add:
-``` VITE_OPENWEATHER_API_KEY=your_api_key_here```
-
-
+### Preferred browser: Chrome or Edge (Firefox may not cause an issue in retrieving location)
 
 
 
