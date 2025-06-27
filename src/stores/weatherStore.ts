@@ -38,28 +38,53 @@ export const useWeatherStore = defineStore("weather", () => {
   const currentDayOrNight = ref<string>("Day"); // Default to "Day"
 
 
-  const getCurrentLocation = (): void => {
-    if ("geolocation" in navigator) {
-      isLoading.value = true;
-      navigator.geolocation.getCurrentPosition(
-        (position: GeolocationPosition) => {
-          geoLocation.value = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          };
-          isLoading.value = false;
-        },
-        (error: GeolocationPositionError) => {
-          isLoading.value = false;
-          errorMessage.value = `Error: ${error.message}`;
-          console.error(errorMessage.value);
-        }
-      );
-    } else {
-      errorMessage.value = "Geolocation is not supported by your browser.";
+ const getCurrentLocation = (): void => {
+  if ("geolocation" in navigator) {
+    isLoading.value = true;
+
+    // Add a timeout fallback in case Safari doesn't respond
+    const timeoutId = setTimeout(() => {
+      isLoading.value = false;
+      errorMessage.value = "Location request timed out. Please check your browser settings.";
       console.error(errorMessage.value);
-    }
-  };
+    }, 10000); // 10 seconds
+
+    navigator.geolocation.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        clearTimeout(timeoutId); // Clear timeout if we get a response
+        geoLocation.value = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
+        isLoading.value = false;
+      },
+      (error: GeolocationPositionError) => {
+        clearTimeout(timeoutId); // Clear timeout on error as well
+        isLoading.value = false;
+
+        // Handle different error types for clarity
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage.value = "Location access denied by the user. Please allow it in browser settings.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage.value = "Location information is unavailable.";
+            break;
+          case error.TIMEOUT:
+            errorMessage.value = "The request to get your location timed out.";
+            break;
+          default:
+            errorMessage.value = `An unknown error occurred: ${error.message}`;
+        }
+
+        console.error(errorMessage.value);
+      }
+    );
+  } else {
+    errorMessage.value = "Geolocation is not supported by your browser.";
+    console.error(errorMessage.value);
+  }
+};
 
 
   const isMyCity = (lat: number, lon: number): boolean => {

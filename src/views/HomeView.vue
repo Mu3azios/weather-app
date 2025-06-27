@@ -304,29 +304,40 @@ export default defineComponent({
       </form>
 
       <div v-if="citySearchResults.length" class="dropdown-menu">
-        <ul>
-          <li
-            v-for="(city, index) in [myCurrentLocation, ...citySearchResults].filter(Boolean)"
-            :key="index"
-            @click="viewDetails(city)"
-            class="dropdown-item clickable-span"
-            :class="{
-              highlighted: highlightedIndex === (myCurrentLocation ? index : index + 1 - 1),
-            }"
-          >
-            <template v-if="myCurrentLocation && city === myCurrentLocation">
-              My Location: {{ city.name }},
-              {{ weatherStore.getCountryName(city.country) }}
-              <i class="pi pi-map-marker"></i>
-            </template>
-            <template v-else>
-              {{ city.name }}
-              <span v-if="city.state">, {{ city.state }}</span
-              >,
-              {{ weatherStore.getCountryName(city.country) }}
-            </template>
-          </li>
-        </ul>
+      <ul>
+  <!-- First item: Either actual location or disabled placeholder -->
+  <li
+    v-if="myCurrentLocation && weatherStore.geoLocation.latitude || weatherStore.geoLocation.longitude"
+    @click="viewDetails(myCurrentLocation)"
+    class="dropdown-item clickable-span"
+    :class="{ highlighted: highlightedIndex === 0 }"
+  >
+    My Location: {{ myCurrentLocation.name }},
+    {{ weatherStore.getCountryName(myCurrentLocation.country) }}
+    <i class="pi pi-map-marker"></i>
+  </li>
+
+  <li
+    v-else
+    class="dropdown-item disabled text-muted"
+    style="pointer-events: none; opacity: 0.6;"
+  >
+    Location not accessible
+  </li>
+
+  <!-- Search results -->
+  <li
+    v-for="(city, index) in citySearchResults"
+    :key="city.lat + '-' + city.lon"
+    @click="viewDetails(city)"
+    class="dropdown-item clickable-span"
+    :class="{ highlighted: highlightedIndex === index + 1 }"
+  >
+    {{ city.name }}
+    <span v-if="city.state">, {{ city.state }}</span>,
+    {{ weatherStore.getCountryName(city.country) }}
+  </li>
+</ul>
       </div>
     </section>
     <p v-if="weatherStore.isLoading">Fetching location...</p>
@@ -344,7 +355,7 @@ export default defineComponent({
         class="router-link"
         @click="viewDetails(city)"
       >
-        <article 
+        <article
           ref="weatherCardRef"
           class="weather-card"
           :style="{ backgroundImage: 'url(../src/assets/photos/' + city.backgroundImage + ')' }"
